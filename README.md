@@ -4,7 +4,7 @@
 
 
 
-**Notice: ** Since the original data used in our paper can not be publicly accessible due to copyright restrictions, we implemented our method on a similar task instead.
+**Notice:** Since the original data used in our paper can not be publicly accessible due to copyright restrictions, we implemented our method on a similar task instead.
 
 
 
