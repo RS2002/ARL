@@ -27,7 +27,7 @@ class MyDataset(Dataset):
 def load_data(data_path="./data/train.csv", encoder_list = None, train=True):
     df = pd.read_csv(data_path)
     # data pre-process
-    df.loc[df['fuel_type'] == 'Electric', 'fuel_type'] = 'Other'
+    df = df[df['fuel_type'] != 'Electric']
     # data load
     x1 = np.array(df[['manufacturer','model','gearbox_type','fuel_type']]) # discrete attributes
     x2 = np.array(df[['year','operating_hours','registration_fees','efficiency','engine_capacity']],dtype=np.float64) # continuous attributes
@@ -57,7 +57,6 @@ def load_data(data_path="./data/train.csv", encoder_list = None, train=True):
         x1 = x1.astype(np.int64)
         id = df['id']
         return  MyDataset(x1,x2,None), id
-
 
 if __name__ == '__main__':
     # test

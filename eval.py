@@ -14,7 +14,7 @@ def get_args():
     parser.add_argument('--batch_size', type=int, default=512)
     parser.add_argument("--train_data_path",type=str,default="../data/train.csv")
     parser.add_argument("--data_path",type=str,default="../data/test.csv")
-    parser.add_argument("--model_path",type=str,default="./model.pth")
+    parser.add_argument('--model_path_list', type=str, nargs='+', default=["./model1.pth","./model2.pth","./model3.pth","./model4.pth","./model5.pth","./model6.pth","./model7.pth"])
 
     parser.add_argument("--cpu", action="store_true",default=False)
     parser.add_argument("--cuda", type=str, default='0')
@@ -40,28 +40,33 @@ if __name__ == '__main__':
 
     data_loader = DataLoader(test_data, batch_size=args.batch_size, shuffle=False, num_workers=args.num_worker)
 
+    result_list = []
     model = MyNet(layer_sizes=args.layer_sizes, arl=args.arl, norm=args.norm, dropout=args.dropout).to(device)
-    model.load_state_dict(torch.load(args.model_path))
-
-    result = None
-
     torch.set_grad_enabled(False)
-    model.eval()
-    pbar = tqdm.tqdm(data_loader)
-    for x1, x2 in pbar:
-        x1 = x1.to(device)
-        x2 = x2.float().to(device)
 
-        y_hat = model(x1, x2)
-        y_hat = y_hat[:,0]
-        y_hat = y_hat.reshape(-1)
-        y_hat = y_hat * std + mean
+    for model_path in args.model_path_list:
+        model.load_state_dict(torch.load(model_path))
+        model.eval()
 
-        if result is None:
-            result = y_hat
-        else:
-            result = torch.concat([result,y_hat],dim=0)
+        result = None
 
+        pbar = tqdm.tqdm(data_loader)
+        for x1, x2 in pbar:
+            x1 = x1.to(device)
+            x2 = x2.float().to(device)
+
+            y_hat = model(x1, x2)
+            y_hat = y_hat[:,0]
+            y_hat = y_hat.reshape(-1)
+            y_hat = y_hat * std + mean
+
+            if result is None:
+                result = y_hat
+            else:
+                result = torch.concat([result,y_hat],dim=0)
+        result_list.append(result.unsqueeze(0))
+
+    result = torch.mean(torch.concat(result_list,dim=0),dim=0)
     result_series = pd.Series(result.cpu().numpy())
     submission_df = pd.DataFrame({
         'id': id,

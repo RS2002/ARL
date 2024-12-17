@@ -39,15 +39,13 @@ class MLP(nn.Module):
 class MyNet(nn.Module):
     def __init__(self, layer_sizes=[128,64,32,16,1], arl=False, norm = True, dropout=0.0):
         super().__init__()
-
         self.emb_manufacturer = nn.Embedding(9,16)
         self.emb_model = nn.Embedding(170,16)
         self.emb_gearbox_type = nn.Embedding(3,16)
         self.emb_fuel_type = nn.Embedding(4,16)
-
         self.emb_continuous = MLP([5,32,64], norm = norm, arl = arl, dropout = dropout)
-
         self.predictor = MLP(layer_sizes, norm = False, arl = False, dropout = dropout)
+        self.softplus = nn.Softplus()
 
     def forward(self,x1,x2):
         emb_manufacturer = self.emb_manufacturer(x1[:,0])
@@ -59,4 +57,8 @@ class MyNet(nn.Module):
 
         x = torch.concatenate([emb_manufacturer,emb_model,emb_gearbox_type,emb_fuel_type,emb_continuous],dim=-1)
         x = self.predictor(x)
+
+        x0 = x[:,0:1]
+        x1 = self.softplus(x[:,1:2])
+        x = torch.concat([x0,x1],dim=1)
         return x

@@ -119,11 +119,11 @@ def main():
         j += 1
         rmse = iteration(model,train_loader,loss_func,optim,scheduler,device,mask_id,mask_prop=args.mask_prop,train=True)
         print("Epoch {:}, Training RMSE {:}".format(j, rmse))
-        with open("log.txt",'w') as f:
+        with open("log.txt",'a') as f:
             f.write("Epoch {:} , Training RMSE {:} , ".format(j, rmse))
         rmse = iteration(model,test_loader,loss_func,optim,scheduler,device,mask_id,mask_prop=0,train=False)
         print("Testing RMSE {:}".format(rmse))
-        with open("log.txt",'w') as f:
+        with open("log.txt",'a') as f:
             f.write("Testing RMSE {:} \n".format(rmse))
         if rmse <= best_rmse:
             torch.save(model.state_dict(), "model.pth")
