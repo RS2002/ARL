@@ -2,7 +2,7 @@
 
 **Paper:** Tingwei Chen, Yantao Wang, Hanzhi Chen, Zijian Zhao, Xinhao Li, Nicola Piovesan, Guangxu Zhu*, Qingjiang Shi, "[Modelling the 5G Energy Consumption using Real-world Data: Energy Fingerprint is All You Need](https://arxiv.org/abs/2406.16929)" (under way)
 
-**Notice: ** The original data used in our paper cannot be publicly accessed due to copyright restrictions. Therefore, we implemented our method on a similar task instead.
+**Notice:** The original data used in our paper cannot be publicly accessed due to copyright restrictions. Therefore, we implemented our method on a similar task instead.
 
 ![](./img/main.png)
 =======
